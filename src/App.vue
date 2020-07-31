@@ -5,16 +5,17 @@
       <div class="field">
         <label for="lastName">Фамилия</label>
         <input
-            id="lastName"
-            placeholder="Введите фамилию"
-            type="text"
-            v-model.trim="lastName"
-            @blur="$v.lastName.$touch()"
+          id="lastName"
+          placeholder="Введите фамилию"
+          type="text"
+          v-model.trim="lastName"
+          @blur="$v.lastName.$touch()"
+          :class="{ 'error': !$v.lastName.$error }"
         />
-        <span class="error" v-if="!$v.lastName.required">*</span>
-        <div class="error" v-if="$v.lastName.$error">
+        <div class="error-message" v-if="!$v.lastName.required">Это обязательное поле</div>
+        <div class="error-message" v-if="$v.lastName.$error">
           <template
-              v-if="!$v.lastName.maxLength"
+            v-if="!$v.lastName.maxLength"
           >Длина фамилии не должна превышать {{ $v.lastName.$params.maxLength.max }} символов</template>
           <template v-else-if="!$v.lastName.alpha">Фамилия должна содержать только буквы в кириллице</template>
         </div>
@@ -22,16 +23,17 @@
       <div class="field">
         <label for="firstName">Имя</label>
         <input
-            id="firstName"
-            placeholder="Введите имя"
-            type="text"
-            v-model.trim="firstName"
-            @blur="$v.firstName.$touch()"
+          id="firstName"
+          placeholder="Введите имя"
+          type="text"
+          v-model.trim="firstName"
+          @blur="$v.firstName.$touch()"
+          :class="{ 'error': $v.firstName.$error || !$v.firstName.required }"
         />
-        <span class="error" v-if="!$v.firstName.required">*</span>
-        <div class="error" v-if="$v.firstName.$error">
+        <div class="error-message" v-if="!$v.firstName.required">Это обязательное поле</div>
+        <div class="error-message" v-if="$v.firstName.$error">
           <template
-              v-if="!$v.firstName.maxLength"
+            v-if="!$v.firstName.maxLength"
           >Длина имени не должна превышать {{ $v.firstName.$params.maxLength.max }} символов</template>
           <template v-else-if="!$v.firstName.alpha">Имя должно содержать только буквы в кириллице</template>
         </div>
@@ -39,59 +41,69 @@
       <div class="field">
         <label for="middleName">Отчество</label>
         <input
-            id="middleName"
-            placeholder="Введите отчество"
-            type="text"
-            v-model.trim="middleName"
-            @blur="$v.middleName.$touch()"
+          id="middleName"
+          placeholder="Введите отчество"
+          type="text"
+          v-model.trim="middleName"
+          @blur="$v.middleName.$touch()"
+          :class="{ 'error': $v.middleName.$error }"
         />
-        <div class="error" v-if="$v.middleName.$error">
+        <div class="error-message" v-if="$v.middleName.$error">
           <template
-              v-if="!$v.middleName.maxLength"
+            v-if="!$v.middleName.maxLength"
           >Длина отчества не должна превышать {{ $v.middleName.$params.maxLength.max }} символов</template>
           <template
-              v-else-if="!$v.middleName.alpha"
+            v-else-if="!$v.middleName.alpha"
           >Отчество должно содержать только буквы в кириллице</template>
         </div>
       </div>
       <div class="field">
         <label for="birthday">Дата рождения</label>
-        <input id="birthday" type="date" v-model="birthday" @blur="$v.birthdayObj.$touch()" />
-        <span class="error" v-if="!$v.birthdayObj.required">*</span>
+        <input 
+        id="birthday" 
+        type="date" 
+        v-model="birthday" 
+        @blur="$v.birthdayObj.$touch()" 
+        :class="{ 'error': $v.birthdayObj.$error || !$v.birthdayObj.required }"
+        />
+        <div class="error-message" v-if="!$v.birthdayObj.required">Это обязательное поле</div>
         <div
-            class="error"
-            v-if="$v.birthdayObj.$error"
+          class="error-message"
+          v-if="$v.birthdayObj.$error"
         >Дата рождения должна быть прошедшей в формате дд.мм.гггг</div>
       </div>
       <div class="field">
         <label for="phone">Номер телефона</label>
         <input
-            id="phone"
-            placeholder="79127745157"
-            type="tel"
-            v-model.trim="phone"
-            @blur="$v.phone.$touch()"
+          id="phone"
+          placeholder="79127745157"
+          type="tel"
+          v-model.trim="phone"
+          @blur="$v.phone.$touch()"
+          :class="{ 'error': $v.phone.$error }"
         />
-        <div class="error" v-if="$v.phone.$error">Номер должен быть в формате 79127745157</div>
+        <div class="error-message" v-if="$v.phone.$error">Номер должен быть в формате 79127745157</div>
       </div>
       <div class="field">
         <label for="gender">Пол</label>
         <span id="gender">
-        <input type="radio" name="gender" v-model="gender" id="gender1" value="male" />
-        <label for="gender1">Мужской</label>
-        <input type="radio" name="gender" v-model="gender" id="gender2" value="female" />
-        <label for="gender2">Женский</label>
-      </span>
+          <input type="radio" name="gender" v-model="gender" id="gender1" value="male" />
+          <label for="gender1">Мужской</label>
+          <input type="radio" name="gender" v-model="gender" id="gender2" value="female" />
+          <label for="gender2">Женский</label>
+        </span>
       </div>
       <div class="field">
         <label for="groupClients">Группа клиентов</label>
         <span id="groupClients">
-        <select multiple="true" v-model="multipleSelections">
-          <option v-for="asset in assets" :value="asset" :key="asset">{{asset}}</option>
-        </select>
-        <span class="error" v-if="!$v.multipleSelections.required">*</span>
-        <span>Вы выбрали группы: {{ multipleSelections }}</span>
-      </span>
+          <select multiple="true" v-model="multipleSelections" :class="{ 'error': !$v.multipleSelections.required}">
+            <option v-for="asset in assets" :value="asset" :key="asset">{{asset}}</option>
+          </select>
+          
+          <div class="error-message" v-if="!$v.multipleSelections.required">Это обязательное поле</div>
+          
+          <span>Вы выбрали группы: {{ multipleSelections }}</span>
+        </span>
       </div>
       <div class="field">
         <label for="doctor">Лечащий врач</label>
@@ -104,11 +116,11 @@
       <div class="field">
         <label for="sms">Не отправлять СМС</label>
         <span id="sms">
-        <input type="radio" name="sms" v-model="sms" id="yesSms" value="1" />
-        <label for="yesSms">Да</label>
-        <input type="radio" name="sms" v-model="sms" id="noSms" value="0" />
-        <label for="noSms">Нет</label>
-      </span>
+          <input type="radio" name="sms" v-model="sms" id="yesSms" value="1" />
+          <label for="yesSms">Да</label>
+          <input type="radio" name="sms" v-model="sms" id="noSms" value="0" />
+          <label for="noSms">Нет</label>
+        </span>
       </div>
       <button @click.prevent="next()">Next</button>
     </div>
@@ -118,103 +130,109 @@
       <div class="field">
         <label for="adress_index">Индекс</label>
         <input
-            id="adress_index"
-            placeholder="Введите индекс"
-            type="text"
-            v-model.trim="adressIndex"
-            @blur="$v.adressIndex.$touch()"
+          id="adress_index"
+          placeholder="Введите индекс"
+          type="text"
+          v-model.trim="adressIndex"
+          @blur="$v.adressIndex.$touch()"
+          :class="{ 'error': $v.adressIndex.$error }"
         />
-        <div class="error" v-if="$v.adressIndex.$error">Индекс должен быть в формате 455000</div>
+        <div class="error-message" v-if="$v.adressIndex.$error">Индекс должен быть в формате 455000</div>
       </div>
       <div class="field">
         <label for="adress_country">Страна</label>
         <input
-            id="adress_country"
-            placeholder="Введите название страны"
-            type="text"
-            v-model.trim="adressCountry"
-            @blur="$v.adressCountry.$touch()"
+          id="adress_country"
+          placeholder="Введите название страны"
+          type="text"
+          v-model.trim="adressCountry"
+          @blur="$v.adressCountry.$touch()"
+          :class="{ 'error': $v.adressCountry.$error }"
         />
 
-        <div class="error" v-if="$v.adressCountry.$error">
+        <div class="error-message" v-if="$v.adressCountry.$error">
           <template
-              v-if="!$v.adressCountry.maxLength"
+            v-if="!$v.adressCountry.maxLength"
           >Название страны не должно превышать {{ $v.adressCountry.$params.maxLength.max }} символов</template>
           <template
-              v-else-if="!$v.adressCountry.alpha"
+            v-else-if="!$v.adressCountry.alpha"
           >Название страны должно содержать только буквы в кириллице</template>
         </div>
       </div>
       <div class="field">
         <label for="adress_region">Область</label>
         <input
-            id="adress_region"
-            placeholder="Введите название области"
-            type="text"
-            v-model.trim="adressRegion"
-            @blur="$v.adressRegion.$touch()"
+          id="adress_region"
+          placeholder="Введите название области"
+          type="text"
+          v-model.trim="adressRegion"
+          @blur="$v.adressRegion.$touch()"
+          :class="{ 'error': $v.adressRegion.$error }"
         />
 
-        <div class="error" v-if="$v.adressRegion.$error">
+        <div class="error-message" v-if="$v.adressRegion.$error">
           <template
-              v-if="!$v.adressRegion.maxLength"
+            v-if="!$v.adressRegion.maxLength"
           >Название области не должно превышать {{ $v.adressRegion.$params.maxLength.max }} символов</template>
           <template
-              v-else-if="!$v.adressRegion.alpha"
+            v-else-if="!$v.adressRegion.alpha"
           >Название области должно содержать только буквы в кириллице</template>
         </div>
       </div>
       <div class="field">
         <label for="adress_city">Город</label>
         <input
-            id="adress_city"
-            placeholder="Введите название города"
-            type="text"
-            v-model.trim="adressCity"
-            @blur="$v.adressCity.$touch()"
+          id="adress_city"
+          placeholder="Введите название города"
+          type="text"
+          v-model.trim="adressCity"
+          @blur="$v.adressCity.$touch()"
+          :class="{ 'error': $v.adressCity.$error || !$v.adressCity.required}"
         />
-        <span class="error" v-if="!$v.adressCity.required">*</span>
+        <div class="error-message" v-if="!$v.adressCity.required">Это обязательное поле</div>
 
-        <div class="error" v-if="$v.adressCity.$error">
+        <div class="error-message" v-if="$v.adressCity.$error">
           <template
-              v-if="!$v.adressCity.maxLength"
+            v-if="!$v.adressCity.maxLength"
           >Название города не должно превышать {{ $v.adressCity.$params.maxLength.max }} символов</template>
           <template
-              v-else-if="!$v.adressCity.alpha"
+            v-else-if="!$v.adressCity.alpha"
           >Название города должно содержать только буквы в кириллице</template>
         </div>
       </div>
       <div class="field">
         <label for="adress_street">Улица</label>
         <input
-            id="adress_street"
-            placeholder="Введите название улицы"
-            type="text"
-            v-model.trim="adressStreet"
-            @blur="$v.adressStreet.$touch()"
+          id="adress_street"
+          placeholder="Введите название улицы"
+          type="text"
+          v-model.trim="adressStreet"
+          @blur="$v.adressStreet.$touch()"
+          :class="{ 'error': $v.adressStreet.$error }"
         />
 
-        <div class="error" v-if="$v.adressStreet.$error">
+        <div class="error-message" v-if="$v.adressStreet.$error">
           <template
-              v-if="!$v.adressStreet.maxLength"
+            v-if="!$v.adressStreet.maxLength"
           >Название улицы не должно превышать {{ $v.adressStreet.$params.maxLength.max }} символов</template>
           <template
-              v-else-if="!$v.adressStreet.alphaNum"
+            v-else-if="!$v.adressStreet.alphaNum"
           >Название улицы должно содержать только цифры и буквы в кириллице</template>
         </div>
       </div>
       <div class="field">
         <label for="adress_building">Дом</label>
         <input
-            id="adress_building"
-            placeholder="Введите номер дома"
-            type="text"
-            v-model.trim="adressBuilding"
-            @blur="$v.adressBuilding.$touch()"
+          id="adress_building"
+          placeholder="Введите номер дома"
+          type="text"
+          v-model.trim="adressBuilding"
+          @blur="$v.adressBuilding.$touch()"
+          :class="{ 'error': $v.adressBuilding.$error }"
         />
         <div
-            class="error"
-            v-if="$v.adressBuilding.$error"
+          class="error-message"
+          v-if="$v.adressBuilding.$error"
         >Номер дома должен быть числом, числом с литерой или числом с дробью числа</div>
       </div>
       <button @click.prevent="prev()">Previous</button>
@@ -222,10 +240,7 @@
     </div>
 
     <div v-show="step === 3">
-      <h2 v-if="!documents">Документ</h2>
-      <h2 v-else-if="documents == 'documentsPassport'">Паспорт</h2>
-      <h2 v-else-if="documents == 'documentsBirth'">Свид. о рождении</h2>
-      <h2 v-else-if="documents == 'documentsDriver'">Вод. удостоверение</h2>
+      <h2>Документ</h2>
       <div class="field">
         <label for="documents">Выберите документ</label>
         <select id="documents" v-model="documents">
@@ -234,73 +249,85 @@
           <option value="documentsDriver">Вод. удостоверение</option>
         </select>
       </div>
+      <h2 v-if="documents == 'documentsPassport'">Паспорт</h2>
+      <h2 v-else-if="documents == 'documentsBirth'">Свид. о рождении</h2>
+      <h2 v-else-if="documents == 'documentsDriver'">Вод. удостоверение</h2>
       <template v-if="documents == 'documentsPassport'">
         <div class="field">
           <label for="passport_serial">Серия паспорта</label>
           <input
-              id="passport_serial"
-              placeholder="Введите серию паспорта"
-              type="number"
-              min="0"
-              max="9999"
-              v-model="passportSerial"
-              @blur="$v.passportSerial.$touch()"
+            id="passport_serial"
+            placeholder="Введите серию паспорта"
+            type="text"
+            min="0"
+            max="9999"
+            v-model="passportSerial"
+            @blur="$v.passportSerial.$touch()"
+            :class="{ 'error': $v.passportSerial.$error }"
+            :maxlength="$v.passportSerial.$params.maxLength.max"
           />
+        
           <div
-              class="error"
-              v-if="$v.passportSerial.$error"
-          >Серия паспорта должны быть числом, не более 4 знаков</div>
+            class="error-message"
+            v-if="$v.passportSerial.$error"
+          >Серия паспорта должна быть числом из 4 знаков</div>
         </div>
 
         <div class="field">
           <label for="passport_number">Номер паспорта</label>
           <input
-              id="passport_number"
-              placeholder="Введите номер паспорта"
-              type="number"
-              min="0"
-              max="999999"
-              v-model="passportNumber"
-              @blur="$v.passportNumber.$touch()"
+            id="passport_number"
+            placeholder="Введите номер паспорта"
+            type="text"
+            min="0"
+            max="999999"
+            v-model="passportNumber"
+            @blur="$v.passportNumber.$touch()"
+            :class="{ 'error': $v.passportNumber.$error }"
+            :maxlength="$v.passportNumber.$params.maxLength.max"
           />
           <div
-              class="error"
-              v-if="$v.passportNumber.$error"
-          >Номер паспорта должен быть числом, не более 6 знаков</div>
+            class="error-message"
+            v-if="$v.passportNumber.$error"
+           >Номер паспорта должен быть числом из 6 знаков</div>
         </div>
 
         <div class="field">
           <label for="passport_issued">Выдан</label>
-          <textarea id="passport_issued" placeholder="Введите кем был выдан паспорт, не более 100 символов" v-model="$v.passportIssued.$model" @blur="$v.passportIssued.$touch()" />
-          <span class="counter">{{ passportIssued.length }} / {{ $v.passportIssued.$params.maxLength.max}}</span>
-          <div
-              class="error"
-              v-if="$v.passportIssued.$error"
-          >Длина строки не более 100 символов</div>
-
+          <textarea
+            id="passport_issued"
+            placeholder="Введите кем был выдан паспорт, не более 100 символов"
+            v-model="$v.passportIssued.$model"
+            @blur="$v.passportIssued.$touch()"
+            :maxlength="$v.passportIssued.$params.maxLength.max"
+            :minlength="$v.passportIssued.$params.minLength.min"
+          />
+          <span
+            class="counter"
+          >{{ passportIssued.length }} / {{ $v.passportIssued.$params.maxLength.max}}</span>
+          <div class="error-message" v-if="$v.passportIssued.$error">Длина строки не менее 30 и не более 100 символов</div>
         </div>
 
         <div class="field">
           <label for="passport_date">Дата выдачи паспорта</label>
           <input
-              id="passport_date"
-              type="date"
-              v-model="passportDate"
-              @blur="$v.passportDateObj.$touch()"
+            id="passport_date"
+            type="date"
+            v-model="passportDate"
+            @blur="$v.passportDateObj.$touch()"
+            :class="{ 'error': !$v.passportDateObj.$error }"
           />
-          <span class="error" v-if="!$v.passportDateObj.required">*</span>
+          <div class="error-message" v-if="!$v.passportDateObj.required">Это обязательное поле</div>
           <div
-              class="error"
-              v-if="$v.passportDateObj.$error"
+            class="error-message"
+            v-if="$v.passportDateObj.$error"
           >Дата выдачи паспорта должна быть прошедшей в формате дд.мм.гггг</div>
         </div>
       </template>
       <button @click.prevent="prev()">Previous</button>
       <button type="submit" :disabled="$v.$invalid">Отправить форму</button>
     </div>
-
   </form>
-
 </template>
 
 <script>
@@ -310,13 +337,13 @@ import {
   minLength,
   maxValue,
   minValue,
-  numeric,
+  numeric
 } from "vuelidate/lib/validators";
 
 export default {
   data() {
     return {
-      step:1,
+      step: 1,
       firstName: null,
       lastName: null,
       middleName: null,
@@ -333,11 +360,11 @@ export default {
       adressCity: null,
       adressStreet: null,
       adressBuilding: null,
-      documents: null,
+      documents: "documentsPassport",
       passportSerial: null,
       passportNumber: null,
       passportDate: null,
-      passportIssued: "",
+      passportIssued: ""
     };
   },
   computed: {
@@ -346,82 +373,89 @@ export default {
     },
     birthdayObj() {
       return this.birthday ? new Date(this.birthday) : null;
-    },
+    }
   },
 
   validations: {
     passportDateObj: {
       required,
       maxValue: maxValue(new Date()),
-      minValue: minValue(new Date(1974, 8, 28)),
+      minValue: minValue(new Date(1974, 8, 28))
     },
     birthdayObj: {
       required,
       maxValue: maxValue(new Date()),
-      minValue: minValue(new Date(1920, 1, 1)),
+      minValue: minValue(new Date(1920, 1, 1))
     },
     firstName: {
       required,
       maxLength: maxLength(30),
-      alpha: (val) => /^[а-яё]*$/i.test(val),
+      alpha: val => /^[а-яё]*$/i.test(val)
     },
     lastName: {
       required,
       maxLength: maxLength(30),
-      alpha: (val) => /^[а-яё]*$/i.test(val),
+      alpha: val => /^[а-яё]*$/i.test(val)
     },
     middleName: {
       maxLength: maxLength(30),
-      alpha: (val) => /^[а-яё]*$/i.test(val),
+      alpha: val => /^[а-яё]*$/i.test(val)
     },
     phone: {
       maxLength: maxLength(12),
       mixLength: minLength(11),
-      validFormat: (val) =>
-        /^((7) ?)?((\(\d{3}\))|(\d{3}))?(\d{3}?\d{2}?\d{2})$/.test(val),
+      validFormat: val =>
+        /^((7) ?)?((\(\d{3}\))|(\d{3}))?(\d{3}?\d{2}?\d{2})$/.test(val)
     },
     multipleSelections: {
-      required,
+      required
     },
     adressIndex: {
-      validFormat: (val) => /^\d{6}$/.test(val),
+      validFormat: val => /^\d{6}$/.test(val)
     },
     adressCountry: {
       maxLength: maxLength(35),
-      alpha: (val) => /^[А-Я]{1}[А-Яа-я]{2}([-А-Яа-я]{0,2})?([-А-Яа-я’]{0,1})?([-А-Яа-яё]{0,2})?([А-Яа-я]{0,1})?([а-я]{0,12})?( [(А-Яа-я–]{1})?([А-Яа-я]{0,1})?([а-я]{0,8})?( [А-Я]{1})?([а-я]{4})?([)а-я]{0,1})?([а-я]{0,9})?( [А-Я]{1})?([а-я]{5,9})?$/i.test(val),
+      alpha: val =>
+        /^[А-Я]{1}[А-Яа-я]{2}([-А-Яа-я]{0,2})?([-А-Яа-я’]{0,1})?([-А-Яа-яё]{0,2})?([А-Яа-я]{0,1})?([а-я]{0,12})?( [(А-Яа-я–]{1})?([А-Яа-я]{0,1})?([а-я]{0,8})?( [А-Я]{1})?([а-я]{4})?([)а-я]{0,1})?([а-я]{0,9})?( [А-Я]{1})?([а-я]{5,9})?$/i.test(
+          val
+        )
     },
     adressRegion: {
       maxLength: maxLength(50),
-      alpha: (val) => /^[а-яё]*$/i.test(val),
+      alpha: val => /^[а-яё]*$/i.test(val)
     },
     adressCity: {
       required,
       maxLength: maxLength(35),
-      alpha: (val) => /^[а-яё]+((?:[- ][а-яё]+)*)+$/i.test(val),
+      alpha: val => /^[а-яё]+((?:[- ][а-яё]+)*)+$/i.test(val)
     },
     adressStreet: {
       maxLength: maxLength(50),
-      alphaNum: (val) => /^[0-9А-Я]{1}([0-9А-Яа-я]{0,1})?([А-Яа-я]{0,1})?([а-я]{0,14})?( [0-9А-Яа-я]{1,2})?([-А-Яа-я]{0,1})?([а-я]{0,4})?([-а-я]{0,1})?([0-9а-я]{0,1})?([а-я]{0,2})?([-а-я]{0,1})?([0-9а-я]{0,1})?([а-я]{0,1})?( [0-9А-Яа-я]{1})?([А-Яа-я]{0,3})?([а-я]{0,6})?([-а-я]{0,1})?([-0-9а-я]{0,1})?([0-9а-я]{0,1})?([а-я]{0,2})?( [(0-9А-Яа-я]{1})?([0-9а-я]{1})?([А-Яа-я]{0,1})?([0-9а-я]{0,1})?([а-я]{0,3})?([)а-я]{0,1})?( [0-9А-Яа-я]{1})?([0-9а-я]{0,1})?(.{0,1})?([0-9а-я]{0,2})?([а-я]{0,3})?$/i.test(val),
+      alphaNum: val =>
+        /^[0-9А-Я]{1}([0-9А-Яа-я]{0,1})?([А-Яа-я]{0,1})?([а-я]{0,14})?( [0-9А-Яа-я]{1,2})?([-А-Яа-я]{0,1})?([а-я]{0,4})?([-а-я]{0,1})?([0-9а-я]{0,1})?([а-я]{0,2})?([-а-я]{0,1})?([0-9а-я]{0,1})?([а-я]{0,1})?( [0-9А-Яа-я]{1})?([А-Яа-я]{0,3})?([а-я]{0,6})?([-а-я]{0,1})?([-0-9а-я]{0,1})?([0-9а-я]{0,1})?([а-я]{0,2})?( [(0-9А-Яа-я]{1})?([0-9а-я]{1})?([А-Яа-я]{0,1})?([0-9а-я]{0,1})?([а-я]{0,3})?([)а-я]{0,1})?( [0-9А-Яа-я]{1})?([0-9а-я]{0,1})?(.{0,1})?([0-9а-я]{0,2})?([а-я]{0,3})?$/i.test(
+          val
+        )
     },
     adressBuilding: {
-      validFormat: (val) => /^[1-9]\d*(?: ?(?:[А-Яа-я]|[/-] ?\d?))?$/.test(val),
+      validFormat: val => /^[1-9]\d*(?: ?(?:[А-Яа-я]|[/-] ?\d?))?$/.test(val)
     },
     passportSerial: {
       numeric,
-      maxLength:  maxLength(4),
+      maxLength: maxLength(4),
       minLength: minLength(4),
       maxValue: maxValue(9999),
-      minValue: minValue(0),
+      minValue: minValue(0)
     },
     passportNumber: {
       numeric,
-      maxLength:  maxLength(6),
+      maxLength: maxLength(6),
       minLength: minLength(6),
       maxValue: maxValue(999999),
-      minValue: minValue(0),
+      minValue: minValue(0)
     },
-    passportIssued:{
-      maxLength:  maxLength(100),
+    passportIssued: {
+      maxLength: maxLength(100),
+      minLength: minLength(30)
     }
   },
 
@@ -434,8 +468,8 @@ export default {
     },
     next() {
       this.step++;
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -473,7 +507,6 @@ export default {
 /*  outline-color: #8e8;*/
 /*}*/
 
-
 *,
 *::after,
 *::before {
@@ -484,13 +517,13 @@ body {
   color: #fff;
   background: #949c4e;
   background: linear-gradient(
-      115deg,
-      rgba(86, 216, 228, 1) 10%,
-      rgba(159, 1, 234, 1) 90%
+    115deg,
+    rgba(86, 216, 228, 1) 10%,
+    rgba(159, 1, 234, 1) 90%
   );
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-  Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial,
-  sans-serif;
+    Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -564,6 +597,7 @@ header h1 {
   color: #2b3e51;
 }
 .vue-form input[type="text"],
+.vue-form input[type="number"],
 .vue-form input[type="email"],
 .vue-form textarea,
 .vue-form select,
@@ -573,6 +607,7 @@ header h1 {
   appearance: none;
 }
 .vue-form input[type="text"],
+.vue-form input[type="number"],
 .vue-form input[type="email"],
 .vue-form textarea,
 .vue-form select {
@@ -583,6 +618,7 @@ header h1 {
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.08);
 }
 .vue-form input[type="text"]:focus,
+.vue-form input[type="number"]:focus,
 .vue-form input[type="email"]:focus,
 .vue-form textarea:focus,
 .vue-form select:focus {
@@ -604,7 +640,7 @@ header h1 {
   width: 16px;
   height: 16px;
   background: url("data:image/svg+xml;charset=utf-8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22utf-8%22%3F%3E%0D%0A%3C%21DOCTYPE%20svg%20PUBLIC%20%22-%2F%2FW3C%2F%2FDTD%20SVG%201.1%2F%2FEN%22%20%22http%3A%2F%2Fwww.w3.org%2FGraphics%2FSVG%2F1.1%2FDTD%2Fsvg11.dtd%22%3E%0D%0A%3Csvg%20version%3D%221.1%22%20id%3D%22Layer_1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20x%3D%220px%22%20y%3D%220px%22%0D%0A%09%20width%3D%2216px%22%20height%3D%2216px%22%20viewBox%3D%220%200%2016%2016%22%20enable-background%3D%22new%200%200%2016%2016%22%20xml%3Aspace%3D%22preserve%22%3E%0D%0A%3Cg%3E%0D%0A%09%3Cpolygon%20fill%3D%22%232c3e50%22%20points%3D%220.9%2C5.5%203.1%2C3.4%208%2C8.3%2012.9%2C3.4%2015.1%2C5.5%208%2C12.6%20%09%22%2F%3E%0D%0A%3C%2Fg%3E%0D%0A%3C%2Fsvg%3E")
-  no-repeat center center;
+    no-repeat center center;
   pointer-events: none;
 }
 .vue-form select {
@@ -627,7 +663,6 @@ header h1 {
   position: relative;
   user-select: none;
   margin: 0 26px 16px 0;
-  float: left;
 }
 .vue-form input[type="radio"],
 .vue-form input[type="checkbox"] {
@@ -728,8 +763,9 @@ header h1 {
   transform: scale(0.9);
 }
 .vue-form .error-message {
-  height: 35px;
-  margin: 0px;
+  margin: 5px;
+  font-size: 14px;
+  color: red;
 }
 .vue-form .error-message p {
   background: #e94b35;
@@ -742,7 +778,7 @@ header h1 {
   padding: 16px;
 }
 .vue-form .error {
-  border-color: #e94b35 !important;
+  border-color: red !important;
 }
 .vue-form .counter {
   background-color: #ecf0f1;
@@ -799,6 +835,4 @@ header h1 {
     transform: scale(0.8);
   }
 }
-
-
 </style>
