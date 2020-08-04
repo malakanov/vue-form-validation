@@ -10,7 +10,7 @@
         <div v-show="step === 1" class="container">
           <client-component v-model="clientForm" v-bind:v="$v" v-bind:step="step" />
           <div class="vue-form-nav">
-            <button @click.prevent="next()" :disabled="!$v.clientForm.lastName.required || !$v.clientForm.firstName.required || !$v.clientForm.birthday.required" >Вперёд</button>
+            <button @click.prevent="next()" :disabled="!$v.clientForm.lastName.required || !$v.clientForm.firstName.required || !$v.clientForm.birthday.required || $v.clientForm.$anyError" >Вперёд</button>
           </div>
         </div>
         <div v-show="step === 2" class="container">
@@ -24,21 +24,21 @@
           <adress-component v-model="adressForm" v-bind:v="$v" v-bind:step="step" />
           <div class="vue-form-nav">
             <button @click.prevent="prev()">Назад</button>
-            <button @click.prevent="next()">Вперёд</button>
+            <button @click.prevent="next()" :disabled="$v.adressForm.$anyError">Вперёд</button>
           </div>
         </div>
         <div v-show="step === 4" class="container">
           <building-component v-model="buildingForm" v-bind:v="$v" v-bind:step="step" />
           <div class="vue-form-nav">
             <button @click.prevent="prev()">Назад</button>
-            <button @click.prevent="next()" :disabled="!$v.buildingForm.city.required">Вперёд</button>
+            <button @click.prevent="next()" :disabled="!$v.buildingForm.city.required || $v.buildingForm.$anyError ">Вперёд</button>
           </div>
         </div>
         <div v-show="step === 5" class="container">
           <documents-component v-model="documentsForm" v-bind:v="$v" v-bind:step="step" />
           <div class="vue-form-nav">
             <button @click.prevent="prev()">Назад</button>
-            <button type="submit" @click="showModal = true" :disabled="!$v.documentsForm.passportDate.required && !$v.documentsForm.birthDate.required && !$v.documentsForm.driverDate.required">Отправить форму</button>
+            <button type="submit" @click="showModal = true" :disabled="!$v.documentsForm.passportDate.required && !$v.documentsForm.birthDate.required && !$v.documentsForm.driverDate.required || $v.documentsForm.$anyError">Отправить форму</button>
           </div>
         </div>
     </form>
@@ -80,14 +80,14 @@ export default {
         lastName: null,
         middleName: "",
         birthday: null,
+        gender: 0,
       },
       contactsForm:{
         phone: null,
-        gender: null,
         multipleSelections: [],
         assets: ["VIP", "Проблемные", "ОМС"],
         doctor: null,
-        sms: null,
+        sms: 0,
       },
       adressForm: {
         index: null,
@@ -268,11 +268,8 @@ export default {
   },
 
   methods: {
-    submit(submitEvent) {
+    submit() {
       console.log('Форма отправлена')
-      for(let element of submitEvent.target.elements) {  
-        console.log(element.value);
-       }
       // this.$refs.form.submit()
     },
     prev() {

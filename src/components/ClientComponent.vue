@@ -78,11 +78,11 @@
       <label class="label" for="gender">Пол</label>
       <ul id="gender" class="vue-form-list">
         <li>
-          <input type="radio" name="gender" v-model="clientForm.gender" id="male" value="male" />
+          <input type="radio" name="gender" v-model="clientForm.gender" id="male" value="0" />
           <label class="label" for="male">Мужской</label>
         </li>
         <li>
-          <input type="radio" name="gender" v-model="clientForm.gender" id="female" value="female" />
+          <input type="radio" name="gender"  v-model="clientForm.gender" id="female" value="1" />
           <label class="label" for="female">Женский</label>
         </li>
       </ul>
