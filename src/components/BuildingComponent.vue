@@ -1,7 +1,5 @@
 <template>
   <div>
-     <h2>Шаг {{ step }} из 5</h2>
-      {{v.buildingForm.$invalid}}
     <div class="field">
       <label class="label" for="city">Город</label>
       <input
@@ -9,7 +7,7 @@
         placeholder="Введите название города"
         type="text"
         v-model.trim="buildingForm.city"
-        @blur="v.buildingForm.city.$touch() && v.buildingForm.street.$touch() && v.buildingForm.building.$touch()"
+        @blur="v.buildingForm.city.$touch()"
         :class="{ 'error': v.buildingForm.city.$error || !v.buildingForm.city.required}"
       />
       <div class="error-message" v-if="!v.buildingForm.city.required">Это обязательное поле</div>

@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h2>Шаг {{ step }} из 5</h2>
     <div class="field">
       <label class="label" for="phone">Номер телефона</label>
       <input

@@ -1,18 +1,23 @@
 <template>
   <div>
-    <form class="vue-form" @submit.prevent="submit">
+    <form ref="form" class="vue-form" @submit.prevent="submit">
+          <div class="shell">
+            <div class="bar" :style="{ width: step/5*100 + '%' }">
+              <span>{{ step/5*100 }}%</span>
+            </div>
+          </div>
         <!-- <img width="25%" src="../assets/logo.png"> -->
         <div v-show="step === 1" class="container">
           <client-component v-model="clientForm" v-bind:v="$v" v-bind:step="step" />
           <div class="vue-form-nav">
-            <button @click.prevent="next()" :disabled="$v.clientForm.$invalid" >Вперёд</button>
+            <button @click.prevent="next()" :disabled="!$v.clientForm.lastName.required || !$v.clientForm.firstName.required || !$v.clientForm.birthday.required" >Вперёд</button>
           </div>
         </div>
         <div v-show="step === 2" class="container">
           <contacts-component v-model="contactsForm" v-bind:v="$v" v-bind:step="step" />
           <div class="vue-form-nav">
             <button @click.prevent="prev()">Назад</button>
-            <button @click.prevent="next()" :disabled="$v.contactsForm.$invalid">Вперёд</button>
+            <button @click.prevent="next()" :disabled="!$v.contactsForm.phone.required || !$v.contactsForm.multipleSelections.required">Вперёд</button>
           </div>
         </div>
         <div v-show="step === 3" class="container">
@@ -26,17 +31,18 @@
           <building-component v-model="buildingForm" v-bind:v="$v" v-bind:step="step" />
           <div class="vue-form-nav">
             <button @click.prevent="prev()">Назад</button>
-            <button @click.prevent="next()" :disabled="$v.buildingForm.$invalid">Вперёд</button>
+            <button @click.prevent="next()" :disabled="!$v.buildingForm.city.required">Вперёд</button>
           </div>
         </div>
         <div v-show="step === 5" class="container">
           <documents-component v-model="documentsForm" v-bind:v="$v" v-bind:step="step" />
           <div class="vue-form-nav">
             <button @click.prevent="prev()">Назад</button>
-            <button type="submit" >Отправить форму</button>
+            <button type="submit" @click="showModal = true" :disabled="!$v.documentsForm.passportDate.required && !$v.documentsForm.birthDate.required && !$v.documentsForm.driverDate.required">Отправить форму</button>
           </div>
         </div>
     </form>
+    <modal-component v-if="showModal" @close="showModal = false" />
   </div>
 </template>
 
@@ -54,6 +60,7 @@ import ContactsComponent from "@/components/ContactsComponent";
 import DocumentsComponent from "@/components/DocumentsComponent";
 import AdressComponent from "@/components/AdressComponent";
 import BuildingComponent from "@/components/BuildingComponent";
+import ModalComponent from "@/components/ModalComponent";
 
 export default {
   name: "FormComponent",
@@ -63,9 +70,11 @@ export default {
     DocumentsComponent,
     AdressComponent,
     BuildingComponent,
+    ModalComponent,
   },
   data() {
     return {
+      showModal: false,
       clientForm: {
         firstName: null,
         lastName: null,
@@ -168,14 +177,14 @@ export default {
       },
       street: {
         maxLength: maxLength(50),
-        // alphaNum: (val) =>
-        //   /^[0-9А-Я]{1}([0-9А-Яа-я]{0,1})?([А-Яа-я]{0,1})?([а-я]{0,14})?( [0-9А-Яа-я]{1,2})?([-А-Яа-я]{0,1})?([а-я]{0,4})?([-а-я]{0,1})?([0-9а-я]{0,1})?([а-я]{0,2})?([-а-я]{0,1})?([0-9а-я]{0,1})?([а-я]{0,1})?( [0-9А-Яа-я]{1})?([А-Яа-я]{0,3})?([а-я]{0,6})?([-а-я]{0,1})?([-0-9а-я]{0,1})?([0-9а-я]{0,1})?([а-я]{0,2})?( [(0-9А-Яа-я]{1})?([0-9а-я]{1})?([А-Яа-я]{0,1})?([0-9а-я]{0,1})?([а-я]{0,3})?([)а-я]{0,1})?( [0-9А-Яа-я]{1})?([0-9а-я]{0,1})?(.{0,1})?([0-9а-я]{0,2})?([а-я]{0,3})?$/i.test(
-        //     val
-        //   ),
+        alphaNum: (val) =>
+          /^[0-9А-Я]{1}([0-9А-Яа-я]{0,1})?([А-Яа-я]{0,1})?([а-я]{0,14})?( [0-9А-Яа-я]{1,2})?([-А-Яа-я]{0,1})?([а-я]{0,4})?([-а-я]{0,1})?([0-9а-я]{0,1})?([а-я]{0,2})?([-а-я]{0,1})?([0-9а-я]{0,1})?([а-я]{0,1})?( [0-9А-Яа-я]{1})?([А-Яа-я]{0,3})?([а-я]{0,6})?([-а-я]{0,1})?([-0-9а-я]{0,1})?([0-9а-я]{0,1})?([а-я]{0,2})?( [(0-9А-Яа-я]{1})?([0-9а-я]{1})?([А-Яа-я]{0,1})?([0-9а-я]{0,1})?([а-я]{0,3})?([)а-я]{0,1})?( [0-9А-Яа-я]{1})?([0-9а-я]{0,1})?(.{0,1})?([0-9а-я]{0,2})?([а-я]{0,3})?$/i.test(
+            val
+          ),
       },
       building: {
-        // validFormat: (val) =>
-        //   /^[1-9]\d*(?: ?(?:[А-Яа-я]|[/-] ?\d?))?$/.test(val),
+        validFormat: (val) =>
+          /^[1-9]\d*(?: ?(?:[А-Яа-я]|[/-] ?\d?))?$/.test(val),
       },
     },
     documentsForm: {
@@ -259,11 +268,12 @@ export default {
   },
 
   methods: {
-    submit() {
-      this.$v.$touch();
-      if(this.$v.$invalid) return
-      // to form submit after this
-      alert('Form submitted')
+    submit(submitEvent) {
+      console.log('Форма отправлена')
+      for(let element of submitEvent.target.elements) {  
+        console.log(element.value);
+       }
+      // this.$refs.form.submit()
     },
     prev() {
       this.step--;

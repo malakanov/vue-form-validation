@@ -1,9 +1,6 @@
 <template>
   <div>
-     <h2>Шаг {{ step }} из 5</h2>
-    
       <div class="field">
-        
       <label class="label" for="documents">Выберите документ</label>
       <p class="select">
       <select class="budget" id="documents" v-model="documentsForm.documents">
